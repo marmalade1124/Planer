@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Award, Zap, TrendingUp, Calendar, Settings, Camera } from "lucide-react";
 import { getUserStats, uploadAvatar } from "@/lib/db";
+import { EnergyChart } from "@/components/EnergyChart";
 
 interface ProfileViewProps {
     userName: string;
@@ -124,23 +125,32 @@ export const ProfileView = ({ userName, onOpenSettings }: ProfileViewProps) => {
                 </div>
             </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-2 gap-4 mb-10">
-                <div className="bg-[#F4F4F5] rounded-2xl p-5 flex flex-col justify-between h-32">
+            {/* Stats Grid - Glassmorphism */}
+            <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="bg-white/60 backdrop-blur-md rounded-2xl p-5 flex flex-col justify-between h-32 border border-white/40 shadow-sm">
                     <Zap className="text-yellow-500" size={24} />
                     <div>
                         <p className="text-3xl font-display font-bold text-[#1A1A1A]">{stats.tasksCompleted}</p>
-                        <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Tasks Done</p>
+                        <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">Tasks Done</p>
                     </div>
                 </div>
 
-                <div className="bg-[#F0FDF4] rounded-2xl p-5 flex flex-col justify-between h-32">
+                <div className="bg-white/60 backdrop-blur-md rounded-2xl p-5 flex flex-col justify-between h-32 border border-white/40 shadow-sm">
                     <TrendingUp className="text-green-600" size={24} />
                     <div>
                         <p className="text-3xl font-display font-bold text-green-700">{stats.focusScore}%</p>
                         <p className="text-xs font-semibold uppercase tracking-wider text-green-600/60">Focus Score</p>
                     </div>
                 </div>
+            </div>
+
+            {/* Energy Chart Section */}
+            <div className="mb-6 bg-white/60 backdrop-blur-md rounded-3xl p-6 border border-white/40 shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-sm font-semibold text-[#1A1A1A]">Energy Flow</h3>
+                    <span className="text-xs text-gray-400">Last 7 Days</span>
+                </div>
+                <EnergyChart />
             </div>
 
             {/* Streak Section */}
@@ -162,12 +172,6 @@ export const ProfileView = ({ userName, onOpenSettings }: ProfileViewProps) => {
                 {/* Decorative background */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl -mr-10 -mt-10"></div>
                 <div className="absolute bottom-0 right-0 w-24 h-24 bg-white/5 rounded-full blur-2xl mr-4 mb-4"></div>
-            </div>
-
-            <div className="mt-8 text-center">
-                 <p className="text-sm text-gray-400">
-                    More insights coming soon...
-                 </p>
             </div>
         </div>
     );

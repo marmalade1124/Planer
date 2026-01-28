@@ -159,3 +159,62 @@ export const uploadAvatar = async (userId: string, file: File) => {
     const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
     return data.publicUrl;
 };
+
+// --- Thesis Manager (Milestones) ---
+
+export interface Milestone {
+    id: string;
+    userId: string;
+    title: string;
+    deadline: Date;
+    completed: boolean;
+    progress: number;
+}
+
+export const addMilestone = async (userId: string, title: string, deadline: Date) => {
+    const { data, error } = await supabase.from('milestones').insert({
+        user_id: userId,
+        title,
+        deadline: deadline.toISOString(),
+        completed: false,
+        progress: 0
+    }).select().single();
+
+    if (error) throw error;
+    
+    return {
+        id: data.id,
+        userId: data.user_id,
+        title: data.title,
+        deadline: new Date(data.deadline),
+        completed: data.completed,
+        progress: data.progress
+    } as Milestone;
+};
+
+export const getMilestones = async (userId: string) => {
+    const { data, error } = await supabase
+        .from('milestones')
+        .select('*')
+        .eq('user_id', userId)
+        .order('deadline', { ascending: true });
+
+    if (error) {
+        console.error("Error fetching milestones:", error);
+        return [];
+    }
+
+    return (data || []).map(d => ({
+        id: d.id,
+        userId: d.user_id,
+        title: d.title,
+        deadline: new Date(d.deadline),
+        completed: d.completed,
+        progress: d.progress
+    })) as Milestone[];
+};
+
+export const toggleMilestone = async (id: string, current: boolean) => {
+    const { error } = await supabase.from('milestones').update({ completed: !current }).eq('id', id);
+    if (error) console.error(error);
+};
