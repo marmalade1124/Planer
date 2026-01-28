@@ -297,11 +297,8 @@ export const Dashboard = ({ userName }: DashboardProps) => {
 
   return (
     <div className="flex flex-col h-full px-6 pb-32 min-h-dvh">
-      {/* Parallax Header */}
-      <motion.header 
-        style={{ y: headerY, opacity: headerOpacity }}
-        className="pt-16 pb-8 sticky top-0 bg-transparent z-10 flex items-start justify-between"
-      >
+      {/* Header (Standard Scroll) */}
+      <header className="pt-16 pb-8 flex items-start justify-between">
         <h1 className={clsx(
             "font-display text-3xl font-semibold leading-[1.2] tracking-tight transition-colors duration-500",
             isDark ? "text-white" : "text-[#1A1A1A]"
@@ -312,7 +309,7 @@ export const Dashboard = ({ userName }: DashboardProps) => {
             : currentTab === 'thesis' ? 'Thesis Manager' 
             : 'Your Profile'}
         </h1>
-      </motion.header>
+      </header>
       
       {/* ... rest of the wrapper ... */}
       {currentTab === 'today' && !isRealityMode ? (

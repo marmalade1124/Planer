@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import { MessageSquare, Calendar, Clock, GraduationCap, User } from "lucide-react";
 import clsx from "clsx";
 
@@ -14,9 +15,32 @@ interface BottomNavProps {
 import { useHaptic } from "@/hooks/useHaptic";
 import { useAtmosphere } from "@/hooks/useAtmosphere";
 
+
+
 export const BottomNav = ({ currentTab, onTabChange }: BottomNavProps) => {
   const haptic = useHaptic();
   const { isDark } = useAtmosphere();
+  const [isVisible, setIsVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+       // Show if scrolling UP or at the very top (safeguard)
+      if (currentScrollY < lastScrollY.current || currentScrollY < 50) {
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
+        // Hide if scrolling DOWN and past top
+        setIsVisible(false);
+      }
+      
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleTabChange = (tab: Tab) => {
       if (tab !== currentTab) {
@@ -27,10 +51,12 @@ export const BottomNav = ({ currentTab, onTabChange }: BottomNavProps) => {
 
   return (
     <nav className={clsx(
-        "fixed bottom-0 left-0 right-0 mx-auto w-full max-w-[430px] border-t px-8 pb-[calc(2rem+env(safe-area-inset-bottom))] pt-4 backdrop-blur-xl transition-colors duration-500",
-        isDark ? "border-white/10 bg-[#0F172A]/80" : "border-[#F1F1F1] bg-white/90"
+        "fixed bottom-0 left-0 right-0 mx-auto w-full max-w-[430px] border-t px-8 pb-[calc(2rem+env(safe-area-inset-bottom))] pt-4 backdrop-blur-xl transition-all duration-300 transform",
+        isDark ? "border-white/10 bg-[#0F172A]/80" : "border-[#F1F1F1] bg-white/90",
+        isVisible ? "translate-y-0 opacity-100" : "translate-y-full opacity-0 pointer-events-none"
     )}>
       <div className="flex items-center justify-between">
+      {/* ... items ... */}
         <NavItem 
           icon={<Calendar className="h-6 w-6" />} 
           label="Today" 
