@@ -11,6 +11,7 @@ import { subscribeToTasks, addTask, toggleTaskCompletion, deleteTask, Task, Ener
 import { TaskSkeleton } from "@/components/TaskSkeleton";
 import { OnboardingOverlay } from "@/components/OnboardingOverlay";
 import { useToast } from "@/components/ToastProvider";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 // Views
 import { DeadlinesView } from "./views/DeadlinesView";
@@ -21,33 +22,60 @@ interface DashboardProps {
   userName: string;
 }
 
+// Container variants for staggered entry
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
 export const Dashboard = ({ userName }: DashboardProps) => {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [isLoading, setIsLoading] = useState(true); // New loading state
+  const [isLoading, setIsLoading] = useState(true);
   const { showToast } = useToast();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [currentTab, setCurrentTab] = useState<Tab>("today");
   const [filterEnergy, setFilterEnergy] = useState<EnergyLevel | null>(null);
 
+  // Reality Mode State
+  const [isRealityMode, setIsRealityMode] = useState(false);
+  const [realityLoading, setRealityLoading] = useState(false);
+  const [focusedTask, setFocusedTask] = useState<Task | null>(null);
+
+  // Scroll Hooks for Parallax
+  const { scrollY } = useScroll();
+  const headerY = useTransform(scrollY, [0, 200], [0, 50]); // Moves slower than scroll
+  const headerOpacity = useTransform(scrollY, [0, 200], [1, 0.8]);
+
   useEffect(() => {
-    // Generate a simple persistent ID for this user if standard Auth isn't fully implemented yet
     const userId = localStorage.getItem("planer_userId") || crypto.randomUUID();
     localStorage.setItem("planer_userId", userId);
 
     const unsubscribe = subscribeToTasks(userId, (newTasks) => {
       setTasks(newTasks);
-      setIsLoading(false); // Disable loading once data arrives
+      setIsLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
 
   const handleAddTask = async (title: string, deadline: string, energy: EnergyLevel) => {
-    // ... existing ...
+      const userId = localStorage.getItem("planer_userId");
+      if (!userId) return;
+
+      try {
+          await addTask(userId, title, new Date(deadline), energy);
+          setIsAddModalOpen(false);
+      } catch (error) {
+          console.error(error);
+          alert("Failed to add task");
+      }
   };
-  
-  // ... existing handlers ...
 
   const handleToggleTask = async (taskId: string, currentStatus: boolean) => {
       await toggleTaskCompletion(taskId, currentStatus);
@@ -60,37 +88,36 @@ export const Dashboard = ({ userName }: DashboardProps) => {
       // Optimistic delete
       setTasks(prev => prev.filter(t => t.id !== taskId));
       
-      // Clear focused task if needed
       if (focusedTask && focusedTask.id === taskId) {
           setFocusedTask(null);
           setIsRealityMode(false);
       }
 
-      // Show Undo Toast
       showToast("Task deleted", async () => {
-          // UNDO ACTION: Add it back immediately
-          setTasks(prev => [...prev, taskToDelete].sort((a,b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime()));
-          // We don't need to call API because we haven't deleted it yet?
-          // WAIT. If we want true undo, we should delay the API call OR revert the API call.
-          // Easiest "Safe" Undo: Don't call API delete until toast expires? No, that's complex state.
-          // Better Undo: Call API delete, if Undo -> Call API add. 
-          // Re-adding a deleted task might lose ID (new ID).
-          // BEST UX: Mark as deleted in state, wait X seconds ?? 
-          // Let's go with: Call Delete API. If Undo -> Call Add API (re-create). It might have a new ID but that's fine for MVP.
+          // UNDO
           await addTask(taskToDelete.userId, taskToDelete.title, new Date(taskToDelete.deadline), taskToDelete.energy);
       });
 
-      // Execute API delete
       await deleteTask(taskId);
   };
 
-  /* Reality Mode Logic */
-  const [isRealityMode, setIsRealityMode] = useState(false);
-  const [realityLoading, setRealityLoading] = useState(false);
-  const [focusedTask, setFocusedTask] = useState<Task | null>(null);
-
   const handleRealityMode = () => {
-    // ... existing ...
+    if (tasks.filter(t => !t.completed).length === 0) return;
+
+    setRealityLoading(true);
+    
+    setTimeout(() => {
+        const pending = tasks.filter(t => !t.completed);
+        const sorted = [...pending].sort((a, b) => {
+             const scoreA = (a.energy === 'High' ? 3 : a.energy === 'Medium' ? 2 : 1) + (new Date(a.deadline).getTime() < Date.now() + 86400000 ? 5 : 0);
+             const scoreB = (b.energy === 'High' ? 3 : b.energy === 'Medium' ? 2 : 1) + (new Date(b.deadline).getTime() < Date.now() + 86400000 ? 5 : 0);
+             return scoreB - scoreA;
+        });
+
+        setFocusedTask(sorted[0]);
+        setRealityLoading(false);
+        setIsRealityMode(true);
+    }, 1500);
   };
 
   const exitRealityMode = () => {
@@ -116,7 +143,7 @@ export const Dashboard = ({ userName }: DashboardProps) => {
           default:
               return (
                 <>
-                {/* Reality Mode Overlay */}
+                 {/* Reality Mode Overlay */}
                  {realityLoading && (
                      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm animate-in fade-in">
                          <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#F1F1F1] border-t-[#1A1A1A]"></div>
@@ -235,14 +262,16 @@ export const Dashboard = ({ userName }: DashboardProps) => {
                 </section>
                 </>
               );
-
       }
   }
 
   return (
-    <div className="flex flex-col h-full px-6 pb-32 bg-white min-h-dvh">
-      {/* Header */}
-      <header className="pt-16 pb-8 sticky top-0 bg-white/90 backdrop-blur-md z-10 flex items-start justify-between">
+    <div className="flex flex-col h-full px-6 pb-32 min-h-dvh">
+      {/* Parallax Header */}
+      <motion.header 
+        style={{ y: headerY, opacity: headerOpacity }}
+        className="pt-16 pb-8 sticky top-0 bg-transparent z-10 flex items-start justify-between"
+      >
         <h1 className="font-display text-3xl font-semibold leading-[1.2] tracking-tight text-[#1A1A1A]">
           {currentTab === 'today' 
             ? `${(new Date().getHours() < 12 ? "Good morning" : new Date().getHours() < 18 ? "Good afternoon" : "Good evening")}, ${userName}. How are we feeling today?` 
@@ -250,12 +279,21 @@ export const Dashboard = ({ userName }: DashboardProps) => {
             : currentTab === 'thesis' ? 'Thesis Manager' 
             : 'Your Profile'}
         </h1>
-        
-        {/* Settings Button - Only on Today tab for now to keep it clean, or always? Always is better. */}
-        {/* Settings Button Moved to Profile View */}
-      </header>
-
-      {renderContent()}
+      </motion.header>
+      
+      {/* Render Content Wrapper with Variants */}
+      {currentTab === 'today' && !isRealityMode ? (
+        <motion.div
+           variants={containerVariants}
+           initial="hidden"
+           animate="show"
+           className="relative z-0"
+        >
+             {renderContent()}
+        </motion.div>
+      ) : (
+         renderContent()
+      )}
 
       {/* Bottom Navigation */}
       <BottomNav currentTab={currentTab} onTabChange={setCurrentTab} />

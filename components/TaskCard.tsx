@@ -57,10 +57,12 @@ export const TaskCard = ({ task, onToggle, onDelete }: TaskCardProps) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "-50px" }}
       exit={{ opacity: 0, height: 0, marginBottom: 0 }}
       layout
+      transition={{ type: "spring", stiffness: 300, damping: 25 }}
       className="mb-3 relative group"
     >
         {/* Background Actions Layer */}

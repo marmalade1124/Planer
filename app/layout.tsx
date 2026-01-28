@@ -3,6 +3,8 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
+import { useAtmosphere } from "@/hooks/useAtmosphere";
+
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -69,13 +71,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const atmosphere = useAtmosphere();
+
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${jakarta.variable} antialiased bg-gray-50 min-h-screen flex justify-center`}
+        className={`${inter.variable} ${jakarta.variable} antialiased min-h-screen flex justify-center transition-colors duration-1000 bg-gray-900`}
       >
          {/* Mobile Wrapper */}
-        <div className="relative flex min-h-dvh w-full max-w-[430px] flex-col bg-[#FFFFFF] shadow-2xl">
+        <div 
+            className={`relative flex min-h-dvh w-full max-w-[430px] flex-col shadow-2xl transition-all duration-1000 ${atmosphere.gradient}`}
+        >
           {children}
         </div>
       </body>
