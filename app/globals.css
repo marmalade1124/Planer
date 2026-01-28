@@ -1,0 +1,53 @@
+
+@import "tailwindcss";
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  
+  /* Fonts */
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-jakarta);
+
+  /* Custom Palette from PlanREAL Design */
+  --color-bg-white: #FFFFFF;
+  --color-primary-dark: #1A1A1A;
+  --color-secondary-gray: #71717A;
+  --color-border-subtle: #F1F1F1;
+
+  /* Energy: Sage (High) */
+  --color-sage-light: #F2F6F2;
+  --color-sage-border: #DCE6DC;
+  --color-sage-text: #4A5D4A;
+
+  /* Energy: Blue (Low) */
+  --color-blue-light: #F0F4F8;
+  --color-blue-border: #D9E2EC;
+  --color-blue-text: #506680;
+  
+  /* Energy: Amber (Medium) */
+  --color-amber-light: #FEF9EC;
+  --color-amber-border: #F9F0D5;
+  --color-amber-text: #856404;
+}
+
+:root {
+  /* Default to Light Mode values for this design as it's card-based */
+  --background: #f9fafb; /* gray-50 */
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Even in dark mode, we want the cards to pop, but let's keep the background dark */
+    --background: #000000;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
