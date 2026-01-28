@@ -11,6 +11,7 @@ interface PinEntryViewProps {
 
 export const PinEntryView = ({ onCorrect, onForgot }: PinEntryViewProps) => {
   const [error, setError] = useState<string | undefined>();
+  const [resetKey, setResetKey] = useState(0);
   const [userName, setUserName] = useState<string>("");
 
   useEffect(() => {
@@ -32,6 +33,7 @@ export const PinEntryView = ({ onCorrect, onForgot }: PinEntryViewProps) => {
         onCorrect();
     } else {
         setError("Incorrect PIN");
+        setResetKey(prev => prev + 1); // Trigger clear
         // Clear error after 2s
         setTimeout(() => setError(undefined), 2000);
     }
@@ -39,14 +41,14 @@ export const PinEntryView = ({ onCorrect, onForgot }: PinEntryViewProps) => {
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center bg-white px-6">
-       <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-50 text-[#1A1A1A]">
-         <Lock size={32} />
+       <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-50 text-[#1A1A1A] shadow-sm">
+         <Lock size={28} />
        </div>
 
        <h1 className="mb-2 text-2xl font-display font-bold text-[#1A1A1A]">
          Welcome back, {userName}
        </h1>
-       <p className="mb-12 text-center text-gray-500">
+       <p className="mb-12 text-center text-gray-400">
          Enter your PIN to access your reality.
        </p>
 
@@ -54,6 +56,7 @@ export const PinEntryView = ({ onCorrect, onForgot }: PinEntryViewProps) => {
          label="" 
          onComplete={handlePinComplete} 
          error={error}
+         resetKey={resetKey}
        />
        
        <button 

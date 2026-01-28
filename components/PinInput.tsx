@@ -10,11 +10,20 @@ interface PinInputProps {
   onComplete: (pin: string) => void;
   label: string;
   error?: string;
+  resetKey?: number; // Change this to trigger reset
 }
 
-export const PinInput = ({ length = 4, onComplete, label, error }: PinInputProps) => {
+export const PinInput = ({ length = 4, onComplete, label, error, resetKey }: PinInputProps) => {
   const [pin, setPin] = useState<string[]>(new Array(length).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  // Clear pin when resetKey changes
+  useEffect(() => {
+      if (resetKey !== undefined) {
+          setPin(new Array(length).fill(""));
+          inputRefs.current[0]?.focus();
+      }
+  }, [resetKey, length]);
 
   // Focus first input on mount
   useEffect(() => {
@@ -62,11 +71,20 @@ export const PinInput = ({ length = 4, onComplete, label, error }: PinInputProps
             value={digit}
             onChange={(e) => handleChange(idx, e.target.value)}
             onKeyDown={(e) => handleKeyDown(idx, e)}
+            
+            // Mask the input logic if needed, but for now we keep visible digits as per user preference or "modern" usage?
+            // Actually modern apps often mask. Let's stick to visible for now unless requested.
+            
             className={clsx(
-              "h-14 w-12 rounded-xl border-2 bg-transparent text-center text-2xl font-bold outline-none transition-all",
-              "focus:border-[#1A1A1A] focus:scale-110",
-              error ? "border-red-400 text-red-500" : "border-[#E5E5E5] text-[#1A1A1A]"
+              "h-16 w-14 rounded-2xl border-2 bg-gray-50 text-center text-3xl font-bold outline-none transition-all duration-200",
+              "focus:border-black focus:bg-white focus:scale-110 focus:shadow-lg",
+              error 
+                ? "border-red-400 text-red-500 bg-red-50 animate-shake" 
+                : "border-transparent text-[#1A1A1A]"
             )}
+            style={{
+                boxShadow: error ? "none" : "0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)"
+            }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.1 }}
