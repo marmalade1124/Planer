@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PlanREAL 🪐
 
-## Getting Started
+> _Stop estimating. Start living._
 
-First, run the development server:
+PlanREAL is a "Reality-Based" Task Manager that adjusts to your energy levels, not just your deadlines. It's designed to prevent burnout by aligning your to-do list with the actual time and energy you have available.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ Key Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 🧠 Reality Mode
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The core of PlanREAL. When you're overwhelmed, hit the **Reality Button**. The app uses a smart algorithm to hide everything except the _single most important task_ you should be doing right now. No distractions, just focus.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 🌊 The Flow
 
-## Learn More
+A cinematic scroll experience. Tasks don't just appear; they cascade in like a waterfall. As you scroll through your day, items glide into view, creating a satisfying, fluid interaction that feels less like work and more like play.
 
-To learn more about Next.js, take a look at the following resources:
+### ⛅ Dynamic Atmospheres
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The app breathes with you. The background gradient shifts automatically based on the time of day:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Dawn (5-11 AM)**: Soft Peach Glow 🌅
+- **Day (11-5 PM)**: Bright Focus White ☀️
+- **Sunset (5-8 PM)**: Warm Lavender Ease-down 🌇
+- **Midnight (8 PM+)**: Deep Focus Blue 🌌
 
-## Deploy on Vercel
+### 🔋 Energy-First Planning
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Every task has an energy cost (Low, Medium, High). PlanREAL helps you balance your day so you don't schedule 5 "High Energy" tasks back-to-back.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Animations**: [Framer Motion](https://www.framer.com/motion/)
+- **Database**: [Supabase](https://supabase.com/) (PostgreSQL)
+- **PWA**: Fully installable on iOS and Android.
+
+## 🚀 Getting Started
+
+1.  **Clone the repo**
+
+    ```bash
+    git clone https://github.com/marmalade1124/Planer.git
+    cd Planer/web
+    ```
+
+2.  **Install dependencies**
+
+    ```bash
+    npm install
+    ```
+
+3.  **Run development server**
+
+    ```bash
+    npm run dev
+    ```
+
+4.  **Open in browser**
+    Navigate to `http://localhost:3000`.
+
+## 📱 Mobile-First Design
+
+PlanREAL is built exclusively for the mobile form factor (`max-w-[430px]`). It mimics a native app experience with:
+
+- Haptic feedback interactions.
+- Pull-to-refresh gestures.
+- Safe-area aware layout.
+- Touch-optimized tap targets.
+
+---
+
+_Built with ❤️ by the PlanREAL Team._
