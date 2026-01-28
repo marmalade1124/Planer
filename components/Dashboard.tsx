@@ -250,7 +250,7 @@ export const Dashboard = ({ userName }: DashboardProps) => {
       <header className="pt-16 pb-8 sticky top-0 bg-white/90 backdrop-blur-md z-10 flex items-start justify-between">
         <h1 className="font-display text-3xl font-semibold leading-[1.2] tracking-tight text-[#1A1A1A]">
           {currentTab === 'today' 
-            ? `Good morning, ${userName}. How are we feeling today?` 
+            ? `${(new Date().getHours() < 12 ? "Good morning" : new Date().getHours() < 18 ? "Good afternoon" : "Good evening")}, ${userName}. How are we feeling today?` 
             : currentTab === 'deadlines' ? 'Deadlines' 
             : currentTab === 'thesis' ? 'Thesis Manager' 
             : 'Your Profile'}
