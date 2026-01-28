@@ -8,10 +8,11 @@ import clsx from "clsx";
 import { AddTaskDrawer } from "@/components/AddTaskDrawer";
 import { SettingsDrawer } from "@/components/SettingsDrawer";
 import { subscribeToTasks, addTask, toggleTaskCompletion, deleteTask, Task, EnergyLevel } from "@/lib/db";
-import { TaskSkeleton } from "@/components/TaskSkeleton";
 import { OnboardingOverlay } from "@/components/OnboardingOverlay";
+import { TaskSkeleton } from "@/components/TaskSkeleton";
 import { useToast } from "@/components/ToastProvider";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { useAtmosphere } from "@/hooks/useAtmosphere";
 
 // Views
 import { DeadlinesView } from "./views/DeadlinesView";
@@ -46,6 +47,9 @@ export const Dashboard = ({ userName }: DashboardProps) => {
   const [isRealityMode, setIsRealityMode] = useState(false);
   const [realityLoading, setRealityLoading] = useState(false);
   const [focusedTask, setFocusedTask] = useState<Task | null>(null);
+
+  // Atmosphere State
+  const { isDark } = useAtmosphere();
 
   // Scroll Hooks for Parallax
   const { scrollY } = useScroll();
@@ -181,14 +185,19 @@ export const Dashboard = ({ userName }: DashboardProps) => {
                 {/* Task List */}
                 <section className="flex-grow flex flex-col animate-in fade-in duration-700 slide-in-from-bottom-4">
                     <div className="flex items-center justify-between mb-4">
-                        <h3 className="font-display text-[11px] font-bold uppercase tracking-[0.15em] text-[#71717A]">
+                        <h3 className={clsx(
+                            "font-display text-[11px] font-bold uppercase tracking-[0.15em]",
+                            isDark ? "text-white/60" : "text-[#71717A]"
+                        )}>
                             {isRealityMode ? "Top Priority" : "Today's Focus"}
                         </h3>
                         {!isRealityMode && tasks.length > 0 && (
                             <button 
                             onClick={() => setIsAddModalOpen(true)}
-                            className="p-1 rounded-full hover:bg-gray-100 text-[#1A1A1A]"
-                            >
+                            className={clsx(
+                                "p-1 rounded-full hover:bg-white/10 text-[#1A1A1A]",
+                                isDark ? "text-white hover:bg-white/20" : "text-[#1A1A1A] hover:bg-gray-100"
+                            )}>
                             <Plus size={18} />
                             </button>
                         )}
@@ -206,12 +215,17 @@ export const Dashboard = ({ userName }: DashboardProps) => {
                                     <TaskCard task={focusedTask} onToggle={handleToggleTask} onDelete={handleDeleteTask} />
                                  </div>
                              </div>
-                             <p className="text-center text-sm text-[#71717A] max-w-xs mx-auto">
+                             <p className={clsx("text-center text-sm max-w-xs mx-auto", isDark ? "text-white/70" : "text-[#71717A]")}>
                                  This is your single most important task right now based on deadlines and energy.
                              </p>
                              <button 
                                 onClick={exitRealityMode}
-                                className="w-full py-3 rounded-xl border border-[#F1F1F1] text-sm font-medium text-[#1A1A1A] hover:bg-[#FAFAFA] transition-colors"
+                                className={clsx(
+                                    "w-full py-3 rounded-xl border text-sm font-medium transition-colors",
+                                    isDark 
+                                      ? "border-white/20 text-white hover:bg-white/10" 
+                                      : "border-[#F1F1F1] text-[#1A1A1A] hover:bg-[#FAFAFA]"
+                                )}
                              >
                                  Return to Full List
                              </button>
@@ -232,14 +246,19 @@ export const Dashboard = ({ userName }: DashboardProps) => {
                                 ))}
                             </div>
                             ) : (
-                            <div className="flex flex-col items-center justify-center flex-grow py-12 text-center border-2 border-dashed border-[#F1F1F1] rounded-2xl bg-[#FAFAFA]">
-                                <p className="text-sm text-[#71717A] mb-4">No tasks planned yet.</p>
+                            <div className={clsx(
+                                "flex flex-col items-center justify-center flex-grow py-12 text-center border-2 border-dashed rounded-2xl transition-colors",
+                                isDark 
+                                    ? "border-white/10 bg-white/5" 
+                                    : "border-[#F1F1F1] bg-[#FAFAFA]"
+                            )}>
+                                <p className={clsx("text-sm mb-4", isDark ? "text-white/60" : "text-[#71717A]")}>No tasks planned yet.</p>
                                 <button 
                                 onClick={() => setIsAddModalOpen(true)}
-                                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#1A1A1A] rounded-full hover:bg-black transition-colors"
+                                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#1A1A1A] rounded-full hover:bg-black transition-colors ring-1 ring-white/20"
                                 >
                                 <Plus size={16} />
-                                HtmlTaskCardAddFirst Task
+                                Add First Task
                                 </button>
                             </div>
                             )}
@@ -248,7 +267,10 @@ export const Dashboard = ({ userName }: DashboardProps) => {
                             <div className="mt-4 mb-8 text-center">
                                 <button 
                                     onClick={handleRealityMode}
-                                    className="text-xs font-medium text-[#71717A] transition-colors hover:text-[#1A1A1A]"
+                                    className={clsx(
+                                        "text-xs font-medium transition-colors",
+                                        isDark ? "text-white/50 hover:text-white" : "text-[#71717A] hover:text-[#1A1A1A]"
+                                    )}
                                 >
                                 Need to adjust today?{" "}
                                 <span className="underline decoration-gray-300 underline-offset-4">
@@ -272,7 +294,10 @@ export const Dashboard = ({ userName }: DashboardProps) => {
         style={{ y: headerY, opacity: headerOpacity }}
         className="pt-16 pb-8 sticky top-0 bg-transparent z-10 flex items-start justify-between"
       >
-        <h1 className="font-display text-3xl font-semibold leading-[1.2] tracking-tight text-[#1A1A1A]">
+        <h1 className={clsx(
+            "font-display text-3xl font-semibold leading-[1.2] tracking-tight transition-colors duration-500",
+            isDark ? "text-white" : "text-[#1A1A1A]"
+        )}>
           {currentTab === 'today' 
             ? `${(new Date().getHours() < 12 ? "Good morning" : new Date().getHours() < 18 ? "Good afternoon" : "Good evening")}, ${userName}. How are we feeling today?` 
             : currentTab === 'deadlines' ? 'Deadlines' 
@@ -281,7 +306,7 @@ export const Dashboard = ({ userName }: DashboardProps) => {
         </h1>
       </motion.header>
       
-      {/* Render Content Wrapper with Variants */}
+      {/* ... rest of the wrapper ... */}
       {currentTab === 'today' && !isRealityMode ? (
         <motion.div
            variants={containerVariants}
