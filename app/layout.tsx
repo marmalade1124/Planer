@@ -22,8 +22,36 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "PlanREAL",
-  description: "Reality-focused task management.",
+  title: {
+    default: "PlanREAL - Reality-Based Task Manager",
+    template: "%s | PlanREAL",
+  },
+  description: "Stop estimating, start living. PlanREAL adjusts your tasks based on your actual energy levels and deadlines. Features Reality Mode for instant prioritization.",
+  keywords: ["productivity", "task manager", "todo list", "reality mode", "energy management", "focus"],
+  authors: [{ name: "PlanREAL Team" }],
+  creator: "PlanREAL",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://planer-app.vercel.app", // Fallback, updated on deploy
+    title: "PlanREAL - Reality-Based Task Manager",
+    description: "Tasks adjusted for your energy. Stop overplanning.",
+    siteName: "PlanREAL",
+    images: [
+      {
+        url: "/icon-512x512.png", // We should ideally add a real og-image.png later
+        width: 512,
+        height: 512,
+        alt: "PlanREAL Icon",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PlanREAL",
+    description: "Tasks adjusted for your energy.",
+    images: ["/icon-512x512.png"],
+  },
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -32,7 +60,7 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: "/icon-192x192.png",
-    apple: "/icon-192x192.png", // Use same icon for now
+    apple: "/icon-192x192.png",
   }
 };
 

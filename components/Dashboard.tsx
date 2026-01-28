@@ -144,12 +144,12 @@ export const Dashboard = ({ userName }: DashboardProps) => {
                                     key={level}
                                     onClick={() => setFilterEnergy(isSelected ? null : level)}
                                     className={clsx(
-                                        "flex-1 rounded-full border py-2.5 text-center text-sm font-medium transition-all active:scale-95",
+                                        "flex-1 rounded-full border py-3 text-center text-sm font-medium transition-all duration-200 active:scale-95 touch-manipulation",
                                         isSelected 
-                                            ? level === "Low" ? "border-blue-200 bg-blue-50 text-blue-700 ring-2 ring-blue-200 ring-offset-1"
-                                            : level === "Medium" ? "border-yellow-200 bg-yellow-50 text-yellow-700 ring-2 ring-yellow-200 ring-offset-1"
-                                            : "border-green-200 bg-green-50 text-green-700 ring-2 ring-green-200 ring-offset-1"
-                                            : "border-zinc-200 bg-white text-zinc-500 hover:bg-zinc-50"
+                                            ? level === "Low" ? "border-blue-200 bg-blue-50 text-blue-700 ring-2 ring-blue-200 ring-offset-1 shadow-sm"
+                                            : level === "Medium" ? "border-yellow-200 bg-yellow-50 text-yellow-700 ring-2 ring-yellow-200 ring-offset-1 shadow-sm"
+                                            : "border-green-200 bg-green-50 text-green-700 ring-2 ring-green-200 ring-offset-1 shadow-sm"
+                                            : "border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 hover:border-zinc-300"
                                     )}
                                 >
                                     {level}

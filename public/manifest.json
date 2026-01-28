@@ -1,10 +1,13 @@
 {
-  "name": "PlanREAL",
+  "name": "PlanREAL - Reality Task Manager",
   "short_name": "PlanREAL",
+  "description": "Task management adjusted for reality. Prioritize based on energy and deadlines.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
+  "orientation": "portrait",
+  "categories": ["productivity", "utilities"],
   "icons": [
     {
       "src": "/icon-192x192.png",

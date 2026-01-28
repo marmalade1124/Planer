@@ -59,8 +59,8 @@ const NavItem = ({
     <div
       onClick={onClick}
       className={clsx(
-        "flex cursor-pointer flex-col items-center gap-1 transition-colors",
-        isActive ? "text-[#1A1A1A]" : "text-[#71717A] hover:text-[#1A1A1A]"
+        "flex min-h-[44px] min-w-[64px] cursor-pointer flex-col items-center justify-center gap-1 rounded-xl transition-all active:scale-95",
+        isActive ? "text-[#1A1A1A]" : "text-[#A1A1AA] hover:bg-gray-50 hover:text-[#1A1A1A]"
       )}
     >
       <div className={clsx(isActive && "fill-current")}>{icon}</div>
