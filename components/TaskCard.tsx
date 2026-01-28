@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { CheckCircle2, Circle, Trash2 } from "lucide-react";
 import { Task } from "@/lib/db";
 import clsx from "clsx";
+import { useHaptic } from "@/hooks/useHaptic";
+import { useConfetti } from "@/hooks/useConfetti";
 
 interface TaskCardProps {
   task: Task;
@@ -19,6 +21,20 @@ const energyStyles = {
 };
 
 export const TaskCard = ({ task, onToggle, onDelete }: TaskCardProps) => {
+  const haptic = useHaptic();
+  const confetti = useConfetti();
+
+  const handleToggle = () => {
+      // Logic: If checking (completing), trigger rewards
+      if (!task.completed) { 
+          haptic.trigger('success'); // Double vibration
+          confetti.trigger();        // Visual explosion
+      } else {
+          haptic.trigger('light');   // Light feedback when unchecking
+      }
+      onToggle(task.id, task.completed);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -31,7 +47,7 @@ export const TaskCard = ({ task, onToggle, onDelete }: TaskCardProps) => {
       )}
     >
       <button 
-        onClick={() => onToggle(task.id, task.completed)}
+        onClick={handleToggle}
         className="flex-shrink-0 pt-1 text-[#E5E5E5] hover:text-[#1A1A1A] transition-colors"
       >
         {task.completed ? (

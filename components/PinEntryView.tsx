@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { PinInput } from "@/components/PinInput";
 import { Lock } from "lucide-react";
+import { useHaptic } from "@/hooks/useHaptic";
 
 interface PinEntryViewProps {
   onCorrect: () => void;
@@ -13,6 +14,7 @@ export const PinEntryView = ({ onCorrect, onForgot }: PinEntryViewProps) => {
   const [error, setError] = useState<string | undefined>();
   const [resetKey, setResetKey] = useState(0);
   const [userName, setUserName] = useState<string>("");
+  const haptic = useHaptic();
 
   useEffect(() => {
     // Get name for greeting
@@ -25,13 +27,16 @@ export const PinEntryView = ({ onCorrect, onForgot }: PinEntryViewProps) => {
     
     // Fallback if no pin stored (shouldn't happen if we are here)
     if (!storedPin) {
+        haptic.trigger('success');
         onCorrect(); 
         return;
     }
 
     if (enteredPin === storedPin) {
+        haptic.trigger('success'); // Good vibes
         onCorrect();
     } else {
+        haptic.trigger('error'); // Bad vibes
         setError("Incorrect PIN");
         setResetKey(prev => prev + 1); // Trigger clear
         // Clear error after 2s
