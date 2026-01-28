@@ -65,9 +65,9 @@ export const ProfileView = ({ userName, onOpenSettings }: ProfileViewProps) => {
             
             setAvatar(urlWithCache);
             localStorage.setItem("planer_avatar", urlWithCache);
-        } catch (error) {
+        } catch (error: any) {
             console.error("Upload failed", error);
-            alert("Failed to upload image. Please check your internet connection.");
+            alert(`Upload failed: ${error.message || "Unknown error"}`);
         } finally {
             setUploading(false);
         }
