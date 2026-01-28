@@ -8,6 +8,8 @@ import clsx from "clsx";
 import { AddTaskDrawer } from "@/components/AddTaskDrawer";
 import { SettingsDrawer } from "@/components/SettingsDrawer";
 import { subscribeToTasks, addTask, toggleTaskCompletion, deleteTask, Task, EnergyLevel } from "@/lib/db";
+import { TaskSkeleton } from "@/components/TaskSkeleton";
+import { OnboardingOverlay } from "@/components/OnboardingOverlay";
 
 // Views
 import { DeadlinesView } from "./views/DeadlinesView";
@@ -20,6 +22,7 @@ interface DashboardProps {
 
 export const Dashboard = ({ userName }: DashboardProps) => {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [isLoading, setIsLoading] = useState(true); // New loading state
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [currentTab, setCurrentTab] = useState<Tab>("today");
@@ -32,27 +35,17 @@ export const Dashboard = ({ userName }: DashboardProps) => {
 
     const unsubscribe = subscribeToTasks(userId, (newTasks) => {
       setTasks(newTasks);
+      setIsLoading(false); // Disable loading once data arrives
     });
 
     return () => unsubscribe();
   }, []);
 
   const handleAddTask = async (title: string, deadline: string, energy: EnergyLevel) => {
-    const userId = localStorage.getItem("planer_userId");
-    if (!userId) return; 
-
-    const newTask = await addTask(userId, title, new Date(deadline), energy);
-    
-    // Optimistic update
-    setTasks(prev => {
-        const updated = [...prev, newTask];
-        return updated.sort((a, b) => {
-            const dateA = new Date(a.deadline).getTime();
-            const dateB = new Date(b.deadline).getTime();
-            return dateA - dateB;
-        });
-    });
+    // ... existing ...
   };
+  
+  // ... existing handlers ...
 
   const handleToggleTask = async (taskId: string, currentStatus: boolean) => {
       await toggleTaskCompletion(taskId, currentStatus);
@@ -77,29 +70,7 @@ export const Dashboard = ({ userName }: DashboardProps) => {
   const [focusedTask, setFocusedTask] = useState<Task | null>(null);
 
   const handleRealityMode = () => {
-    if (tasks.length === 0) return;
-    
-    setRealityLoading(true);
-    
-    // Simulate "AI processing" delay
-    setTimeout(() => {
-        const sorted = [...tasks].filter(t => !t.completed).sort((a, b) => {
-            const dateA = a.deadline ? new Date(a.deadline).getTime() : Number.MAX_SAFE_INTEGER;
-            const dateB = b.deadline ? new Date(b.deadline).getTime() : Number.MAX_SAFE_INTEGER;
-            
-            if (Math.abs(dateA - dateB) < 86400000) {
-                 const energyScore = { High: 3, Medium: 2, Low: 1 };
-                 return energyScore[b.energy] - energyScore[a.energy];
-            }
-            return dateA - dateB;
-        });
-
-        if (sorted.length > 0) {
-            setFocusedTask(sorted[0]);
-            setIsRealityMode(true);
-        }
-        setRealityLoading(false);
-    }, 1500);
+    // ... existing ...
   };
 
   const exitRealityMode = () => {
@@ -176,7 +147,11 @@ export const Dashboard = ({ userName }: DashboardProps) => {
                         )}
                     </div>
 
-                    {isRealityMode && focusedTask ? (
+                    {isLoading ? (
+                         <div className="space-y-4">
+                             {[...Array(3)].map((_, i) => <TaskSkeleton key={i} />)}
+                         </div>
+                    ) : isRealityMode && focusedTask ? (
                          <div className="space-y-4">
                              <div className="relative">
                                  <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 opacity-20 blur"></div>
@@ -217,7 +192,7 @@ export const Dashboard = ({ userName }: DashboardProps) => {
                                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#1A1A1A] rounded-full hover:bg-black transition-colors"
                                 >
                                 <Plus size={16} />
-                                Add First Task
+                                HtmlTaskCardAddFirst Task
                                 </button>
                             </div>
                             )}
@@ -278,6 +253,9 @@ export const Dashboard = ({ userName }: DashboardProps) => {
         onClose={() => setIsSettingsOpen(false)}
         userName={userName}
       />
+
+      {/* Onboarding Overlay */}
+      <OnboardingOverlay />
     </div>
   );
 };
