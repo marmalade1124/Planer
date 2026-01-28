@@ -1,6 +1,6 @@
 {
-  "name": "PlanREAL - Reality Task Manager",
-  "short_name": "PlanREAL",
+  "name": "Planer - Reality Task Manager",
+  "short_name": "Planer",
   "description": "Task management adjusted for reality. Prioritize based on energy and deadlines.",
   "start_url": "/",
   "display": "standalone",

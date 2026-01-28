@@ -1,14 +1,14 @@
-# PlanREAL 🪐
+# Planer 🪐
 
 > _Stop estimating. Start living._
 
-PlanREAL is a "Reality-Based" Task Manager that adjusts to your energy levels, not just your deadlines. It's designed to prevent burnout by aligning your to-do list with the actual time and energy you have available.
+Planer is a "Reality-Based" Task Manager that adjusts to your energy levels, not just your deadlines. It's designed to prevent burnout by aligning your to-do list with the actual time and energy you have available.
 
 ## ✨ Key Features
 
 ### 🧠 Reality Mode
 
-The core of PlanREAL. When you're overwhelmed, hit the **Reality Button**. The app uses a smart algorithm to hide everything except the _single most important task_ you should be doing right now. No distractions, just focus.
+The core of Planer. When you're overwhelmed, hit the **Reality Button**. The app uses a smart algorithm to hide everything except the _single most important task_ you should be doing right now. No distractions, just focus.
 
 ### 🌊 The Flow
 
@@ -25,7 +25,7 @@ The app breathes with you. The background gradient shifts automatically based on
 
 ### 🔋 Energy-First Planning
 
-Every task has an energy cost (Low, Medium, High). PlanREAL helps you balance your day so you don't schedule 5 "High Energy" tasks back-to-back.
+Every task has an energy cost (Low, Medium, High). Planer helps you balance your day so you don't schedule 5 "High Energy" tasks back-to-back.
 
 ## 🛠️ Tech Stack
 
@@ -61,7 +61,7 @@ Every task has an energy cost (Low, Medium, High). PlanREAL helps you balance yo
 
 ## 📱 Mobile-First Design
 
-PlanREAL is built exclusively for the mobile form factor (`max-w-[430px]`). It mimics a native app experience with:
+Planer is built exclusively for the mobile form factor (`max-w-[430px]`). It mimics a native app experience with:
 
 - Haptic feedback interactions.
 - Pull-to-refresh gestures.
@@ -70,4 +70,4 @@ PlanREAL is built exclusively for the mobile form factor (`max-w-[430px]`). It m
 
 ---
 
-_Built with ❤️ by the PlanREAL Team._
+_Built with ❤️ by the Planer Team._

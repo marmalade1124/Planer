@@ -23,32 +23,32 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "PlanREAL - Reality-Based Task Manager",
-    template: "%s | PlanREAL",
+    default: "Planer",
+    template: "%s | Planer",
   },
-  description: "Stop estimating, start living. PlanREAL adjusts your tasks based on your actual energy levels and deadlines. Features Reality Mode for instant prioritization.",
+  description: "Stop estimating, start living. Planer adjusts your tasks based on your actual energy levels and deadlines. Features Reality Mode for instant prioritization.",
   keywords: ["productivity", "task manager", "todo list", "reality mode", "energy management", "focus"],
-  authors: [{ name: "PlanREAL Team" }],
-  creator: "PlanREAL",
+  authors: [{ name: "Planer Team" }],
+  creator: "Planer",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://planer-app.vercel.app", // Fallback, updated on deploy
-    title: "PlanREAL - Reality-Based Task Manager",
+    title: "Planer",
     description: "Tasks adjusted for your energy. Stop overplanning.",
-    siteName: "PlanREAL",
+    siteName: "Planer",
     images: [
       {
         url: "/icon-512x512.png", // We should ideally add a real og-image.png later
         width: 512,
         height: 512,
-        alt: "PlanREAL Icon",
+        alt: "Planer Icon",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "PlanREAL",
+    title: "Planer",
     description: "Tasks adjusted for your energy.",
     images: ["/icon-512x512.png"],
   },
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "PlanREAL",
+    title: "Planer",
   },
   icons: {
     icon: "/icon-192x192.png",
