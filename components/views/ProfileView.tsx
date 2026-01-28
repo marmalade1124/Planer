@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Award, Zap, TrendingUp, Calendar, Settings, Camera } from "lucide-react";
+import Image from "next/image";
 import { getUserStats, uploadAvatar } from "@/lib/db";
 import { EnergyChart } from "@/components/EnergyChart";
 import { useAtmosphere } from "@/hooks/useAtmosphere";
@@ -100,7 +101,14 @@ export const ProfileView = ({ userName, onOpenSettings }: ProfileViewProps) => {
                         isDark ? "bg-white/10 text-white border-white/10" : "bg-[#1A1A1A] text-white border-white"
                     )}>
                         {avatar ? (
-                            <img src={avatar} alt="Profile" className="h-full w-full object-cover" />
+                            <Image 
+                                src={avatar} 
+                                alt="Profile" 
+                                fill
+                                sizes="80px"
+                                className="object-cover"
+                                priority
+                            />
                         ) : (
                             userName.charAt(0).toUpperCase()
                         )}

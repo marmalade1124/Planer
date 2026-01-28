@@ -44,16 +44,19 @@ export const useAtmosphere = () => {
   useEffect(() => {
     const updateAtmosphere = () => {
       const hour = new Date().getHours();
+      let newTheme: Atmosphere;
       
       if (hour >= 5 && hour < 11) {
-        setAtmosphere(THEMES.dawn);
+        newTheme = THEMES.dawn;
       } else if (hour >= 11 && hour < 17) {
-        setAtmosphere(THEMES.day);
+        newTheme = THEMES.day;
       } else if (hour >= 17 && hour < 20) {
-        setAtmosphere(THEMES.sunset);
+        newTheme = THEMES.sunset;
       } else {
-        setAtmosphere(THEMES.night);
+        newTheme = THEMES.night;
       }
+
+      setAtmosphere(prev => prev.type === newTheme.type ? prev : newTheme);
     };
 
     updateAtmosphere();

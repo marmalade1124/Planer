@@ -5,8 +5,10 @@ import { BottomNav, Tab } from "@/components/BottomNav";
 import { TaskCard } from "@/components/TaskCard";
 import { Plus, Settings } from "lucide-react";
 import clsx from "clsx";
-import { AddTaskDrawer } from "@/components/AddTaskDrawer";
-import { SettingsDrawer } from "@/components/SettingsDrawer";
+import dynamic from "next/dynamic";
+// Dynamic Drawers (Load on interaction)
+const AddTaskDrawer = dynamic(() => import("@/components/AddTaskDrawer").then(mod => mod.AddTaskDrawer), { ssr: false });
+const SettingsDrawer = dynamic(() => import("@/components/SettingsDrawer").then(mod => mod.SettingsDrawer), { ssr: false });
 import { subscribeToTasks, addTask, toggleTaskCompletion, deleteTask, Task, EnergyLevel } from "@/lib/db";
 import { OnboardingOverlay } from "@/components/OnboardingOverlay";
 import { TaskSkeleton } from "@/components/TaskSkeleton";
@@ -14,10 +16,16 @@ import { useToast } from "@/components/ToastProvider";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useAtmosphere } from "@/hooks/useAtmosphere";
 
-// Views
-import { DeadlinesView } from "./views/DeadlinesView";
-import { ThesisView } from "./views/ThesisView";
-import { ProfileView } from "./views/ProfileView";
+// Dynamic Views (Code Splitting)
+const DeadlinesView = dynamic(() => import("./views/DeadlinesView").then(mod => mod.DeadlinesView), {
+  loading: () => <div className="h-64 animate-pulse bg-gray-100 rounded-3xl" />,
+});
+const ThesisView = dynamic(() => import("./views/ThesisView").then(mod => mod.ThesisView), {
+  loading: () => <div className="h-64 animate-pulse bg-gray-100 rounded-3xl" />,
+});
+const ProfileView = dynamic(() => import("./views/ProfileView").then(mod => mod.ProfileView), {
+  loading: () => <div className="h-64 animate-pulse bg-gray-100 rounded-3xl" />,
+});
 
 interface DashboardProps {
   userName: string;
