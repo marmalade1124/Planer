@@ -20,7 +20,7 @@ const data = [
   { name: "Sun", energy: 65 },
 ];
 
-export const EnergyChart = () => {
+export const EnergyChart = ({ isDark }: { isDark?: boolean }) => {
   return (
     <div className="h-[200px] w-full">
       <ResponsiveContainer width="100%" height="100%">
@@ -44,13 +44,13 @@ export const EnergyChart = () => {
             dataKey="name" 
             axisLine={false} 
             tickLine={false} 
-            tick={{ fontSize: 12, fill: '#9CA3AF' }} 
+            tick={{ fontSize: 12, fill: isDark ? '#ffffff60' : '#9CA3AF' }} 
             interval="preserveStartEnd"
           />
           <YAxis 
             axisLine={false} 
             tickLine={false} 
-            tick={{ fontSize: 12, fill: '#9CA3AF' }}
+            tick={{ fontSize: 12, fill: isDark ? '#ffffff60' : '#9CA3AF' }}
           />
           <Tooltip 
             contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}

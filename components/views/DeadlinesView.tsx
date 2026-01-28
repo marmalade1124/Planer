@@ -4,6 +4,7 @@ import { Task } from "@/lib/db";
 import { TaskCard } from "@/components/TaskCard";
 import { Calendar, AlertCircle } from "lucide-react";
 import clsx from "clsx";
+import { useAtmosphere } from "@/hooks/useAtmosphere";
 
 interface DeadlinesViewProps {
     tasks: Task[];
@@ -11,12 +12,18 @@ interface DeadlinesViewProps {
     onDelete: (taskId: string) => void;
 }
 
-export const DeadlinesView = ({ tasks, onToggle, onDelete }: DeadlinesViewProps) => { // Fixed: destructured props correctly
+export const DeadlinesView = ({ tasks, onToggle, onDelete }: DeadlinesViewProps) => {
+    const { isDark } = useAtmosphere();
     // 1. Filter out completed tasks (Deadlines View is for what's coming up)
     const activeTasks = tasks.filter(t => !t.completed);
 
-    // 2. Helper to group tasks
+    // ... helper logic ...
     const groupTasks = () => {
+        // ... (keep existing logic exactly as is, just collapsed for brevity in this replace block if possible, but replace tool needs context. I will assume the logic is unchanged and just target the render part if possible. 
+        // Actually, to be safe, I'll keep the logic but I need to be careful with line counts. 
+        // The logic is long. I will target the Section component and the return statement primarily.
+        
+        // RE-INSERTING THE GROUP LOGIC TO BE SAFE
         const groups = {
             overdue: [] as Task[],
             today: [] as Task[],
@@ -27,46 +34,7 @@ export const DeadlinesView = ({ tasks, onToggle, onDelete }: DeadlinesViewProps)
         };
 
         const now = new Date();
-        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-        const tomorrowStart = todayStart + 86400000;
-        const nextWeekStart = todayStart + (86400000 * 7);
-
-        activeTasks.forEach(task => {
-             if (!task.deadline) {
-                 groups.noDeadline.push(task);
-                 return;
-             }
-
-             const date = new Date(task.deadline);
-             const time = date.getTime();
-
-             if (time < now.getTime()) {
-                 groups.overdue.push(task);
-             } else if (time < tomorrowStart + 86400000 && time >= todayStart) { // Fix: Today logic handles hours
-                 if (date.getDate() === now.getDate()) {
-                    groups.today.push(task);
-                 } else {
-                    // technically "tomorrow" if hours pushed it over, but let's be strict
-                    groups.tomorrow.push(task); 
-                 }
-             } else if (date.getDate() === new Date(tomorrowStart).getDate()) { // Strict tomorrow check
-                 groups.tomorrow.push(task);
-             } else if (time < nextWeekStart) {
-                 groups.thisWeek.push(task);
-             } else {
-                 groups.later.push(task);
-             }
-        });
-        
-        // Fix: simple "Today" check logic above was slightly flawed due to time comparisons. 
-        // Let's re-do cleaner buckets.
-        
-        // Reset
-        groups.overdue = [];
-        groups.today = [];
-        groups.tomorrow = [];
-        groups.thisWeek = [];
-        groups.later = [];
+        const activeTasks = tasks.filter(t => !t.completed);
 
         activeTasks.forEach(task => {
             if (!task.deadline) {
@@ -121,11 +89,11 @@ export const DeadlinesView = ({ tasks, onToggle, onDelete }: DeadlinesViewProps)
     if (!hasAny) {
         return (
              <div className="flex flex-col items-center justify-center flex-grow py-20 text-center animate-in fade-in">
-                <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4">
-                    <Calendar className="w-8 h-8 text-green-600" />
+                <div className={clsx("w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-colors", isDark ? "bg-white/10" : "bg-green-50")}>
+                    <Calendar className={clsx("w-8 h-8", isDark ? "text-white/60" : "text-green-600")} />
                 </div>
-                <h2 className="text-lg font-bold text-[#1A1A1A]">All Caught Up!</h2>
-                <p className="text-[#71717A] max-w-xs mt-2">
+                <h2 className={clsx("text-lg font-bold", isDark ? "text-white" : "text-[#1A1A1A]")}>All Caught Up!</h2>
+                <p className={clsx("max-w-xs mt-2", isDark ? "text-white/60" : "text-[#71717A]")}>
                     You have no upcoming deadlines. Enjoy your free time.
                 </p>
             </div>
@@ -135,11 +103,11 @@ export const DeadlinesView = ({ tasks, onToggle, onDelete }: DeadlinesViewProps)
     return (
         <div className="flex flex-col flex-grow pb-32">
              <Section title="Overdue" tasks={grouped.overdue} color="text-red-500" icon={AlertCircle} />
-             <Section title="Today" tasks={grouped.today} color="text-[#1A1A1A]" />
+             <Section title="Today" tasks={grouped.today} color={isDark ? "text-white" : "text-[#1A1A1A]"} />
              <Section title="Tomorrow" tasks={grouped.tomorrow} color="text-orange-600" />
              <Section title="This Week" tasks={grouped.thisWeek} color="text-blue-600" />
-             <Section title="Later" tasks={grouped.later} color="text-gray-500" />
-             <Section title="No Deadline" tasks={grouped.noDeadline} color="text-gray-400" />
+             <Section title="Later" tasks={grouped.later} color={isDark ? "text-white/40" : "text-gray-500"} />
+             <Section title="No Deadline" tasks={grouped.noDeadline} color={isDark ? "text-white/30" : "text-gray-400"} />
         </div>
     );
 };

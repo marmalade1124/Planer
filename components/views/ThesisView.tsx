@@ -7,8 +7,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import clsx from "clsx";
 import { useConfetti } from "@/hooks/useConfetti";
 import { useHaptic } from "@/hooks/useHaptic";
+import { useAtmosphere } from "@/hooks/useAtmosphere";
 
 export const ThesisView = () => {
+    const { isDark } = useAtmosphere();
     const [milestones, setMilestones] = useState<Milestone[]>([]);
     const [newTitle, setNewTitle] = useState("");
     const [newDate, setNewDate] = useState("");
@@ -69,24 +71,27 @@ export const ThesisView = () => {
     return (
         <div className="pb-24 animate-in fade-in duration-500">
             {/* Header / Countdown */}
-            <div className="mb-8 p-6 bg-[#1A1A1A] rounded-3xl text-white shadow-xl relative overflow-hidden">
+            <div className={clsx(
+                "mb-8 p-6 rounded-3xl text-white shadow-xl relative overflow-hidden transition-colors",
+                isDark ? "bg-white/10" : "bg-[#1A1A1A]"
+            )}>
                 <div className="relative z-10">
-                    <h2 className="text-gray-400 text-sm font-medium mb-1 uppercase tracking-wider">Major Deadline</h2>
+                    <h2 className="text-white/60 text-sm font-medium mb-1 uppercase tracking-wider">Major Deadline</h2>
                     {nearest ? (
                         <>
                             <div className="flex items-baseline gap-2">
                                 <span className="text-5xl font-display font-bold">{getDaysLeft(nearest.deadline)}</span>
-                                <span className="text-xl text-gray-400">days left</span>
+                                <span className="text-xl text-white/50">days left</span>
                             </div>
                             <p className="mt-2 text-lg font-medium">{nearest.title}</p>
-                            <p className="text-xs text-gray-500 mt-1">
+                            <p className="text-xs text-white/50 mt-1">
                                 {new Date(nearest.deadline).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                             </p>
                         </>
                     ) : (
                         <div className="py-4">
                             <p className="text-xl font-medium">No pending deadlines</p>
-                            <p className="text-sm text-gray-500">You're free! Or you need to add one.</p>
+                            <p className="text-sm text-white/50">You're free! Or you need to add one.</p>
                         </div>
                     )}
                 </div>
@@ -97,19 +102,19 @@ export const ThesisView = () => {
             {/* Progress Bar */}
             <div className="mb-8">
                 <div className="flex justify-between text-sm mb-2">
-                    <span className="font-medium text-[#1A1A1A]">Thesis Progress</span>
-                    <span className="text-gray-500">{progress}%</span>
+                    <span className={clsx("font-medium", isDark ? "text-white" : "text-[#1A1A1A]")}>Thesis Progress</span>
+                    <span className={clsx(isDark ? "text-white/60" : "text-gray-500")}>{progress}%</span>
                 </div>
-                <div className="h-3 w-full bg-gray-100 rounded-full overflow-hidden">
+                <div className={clsx("h-3 w-full rounded-full overflow-hidden", isDark ? "bg-white/10" : "bg-gray-100")}>
                     <div 
-                        className="h-full bg-black transition-all duration-1000 ease-out"
+                        className={clsx("h-full transition-all duration-1000 ease-out", isDark ? "bg-white" : "bg-black")}
                         style={{ width: `${progress}%` }}
                     />
                 </div>
             </div>
 
             {/* Timeline */}
-            <div className="relative pl-4 border-l-2 border-gray-100 space-y-8">
+            <div className={clsx("relative pl-4 border-l-2 space-y-8", isDark ? "border-white/10" : "border-gray-100")}>
                 <AnimatePresence>
                 {milestones.map((milestone) => (
                     <motion.div 
@@ -120,28 +125,37 @@ export const ThesisView = () => {
                     >
                         {/* Dot on timeline */}
                         <div className={clsx(
-                            "absolute -left-[21px] top-1 h-3 w-3 rounded-full border-2 bg-white transition-colors",
-                            milestone.completed ? "border-green-500 bg-green-500" : "border-gray-300"
+                            "absolute -left-[21px] top-1 h-3 w-3 rounded-full border-2 transition-colors",
+                            milestone.completed 
+                                ? "border-green-500 bg-green-500" 
+                                : isDark ? "border-white/40 bg-[#0F172A]" : "border-gray-300 bg-white"
                         )} />
 
                         <div 
                             onClick={() => handleToggle(milestone.id, milestone.completed)}
                             className={clsx(
                                 "p-4 rounded-2xl border transition-all cursor-pointer hover:shadow-md active:scale-[0.98]",
-                                milestone.completed ? "bg-gray-50 border-transparent opacity-60" : "bg-white border-gray-100 shadow-sm"
+                                milestone.completed 
+                                    ? isDark ? "bg-white/5 border-transparent opacity-60" : "bg-gray-50 border-transparent opacity-60"
+                                    : isDark ? "bg-white/10 border-white/10 hover:bg-white/15" : "bg-white border-gray-100 shadow-sm"
                             )}
                         >
                             <div className="flex items-start justify-between">
                                 <div>
-                                    <h3 className={clsx("font-medium text-lg", milestone.completed && "line-through text-gray-400")}>
+                                    <h3 className={clsx(
+                                        "font-medium text-lg",
+                                        milestone.completed 
+                                            ? "line-through text-gray-400" 
+                                            : isDark ? "text-white" : "text-[#1A1A1A]"
+                                    )}>
                                         {milestone.title}
                                     </h3>
-                                    <p className="text-sm text-gray-400 flex items-center gap-1 mt-1">
+                                    <p className={clsx("text-sm flex items-center gap-1 mt-1", isDark ? "text-white/40" : "text-gray-400")}>
                                         <Clock size={12} />
                                         {new Date(milestone.deadline).toLocaleDateString()}
                                     </p>
                                 </div>
-                                <div className={clsx("text-gray-300", milestone.completed && "text-green-500")}>
+                                <div className={clsx(milestone.completed ? "text-green-500" : isDark ? "text-white/30" : "text-gray-300")}>
                                     {milestone.completed ? <CheckCircle2 size={24} /> : <Circle size={24} />}
                                 </div>
                             </div>
@@ -152,37 +166,55 @@ export const ThesisView = () => {
 
                 {/* Add New Button */}
                 <div className="relative">
-                    <div className="absolute -left-[21px] top-3 h-3 w-3 rounded-full border-2 border-dashed border-gray-300 bg-white" />
+                    <div className={clsx(
+                        "absolute -left-[21px] top-3 h-3 w-3 rounded-full border-2 border-dashed",
+                        isDark ? "border-white/20 bg-[#0F172A]" : "border-gray-300 bg-white"
+                    )} />
                     
                     {!isAdding ? (
                          <button 
                             onClick={() => setIsAdding(true)}
-                            className="flex items-center gap-2 text-gray-400 hover:text-[#1A1A1A] transition-colors py-2"
+                            className={clsx(
+                                "flex items-center gap-2 transition-colors py-2",
+                                isDark ? "text-white/40 hover:text-white" : "text-gray-400 hover:text-[#1A1A1A]"
+                            )}
                          >
                              <Plus size={20} />
                              <span className="font-medium">Add Milestone</span>
                          </button>
                     ) : (
-                        <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-lg animate-in zoom-in-95">
+                        <div className={clsx(
+                            "rounded-2xl border p-4 shadow-lg animate-in zoom-in-95",
+                            isDark ? "bg-[#1E293B] border-white/10" : "bg-white border-gray-200"
+                        )}>
                             <input 
                                 autoFocus
                                 type="text" 
                                 placeholder="Milestone Title"
-                                className="w-full text-lg font-medium outline-none mb-3 placeholder:text-gray-300"
+                                className={clsx(
+                                    "w-full text-lg font-medium outline-none mb-3 bg-transparent",
+                                    isDark ? "text-white placeholder:text-white/20" : "text-[#1A1A1A] placeholder:text-gray-300"
+                                )}
                                 value={newTitle}
                                 onChange={e => setNewTitle(e.target.value)}
                             />
                             <div className="flex gap-2">
                                 <input 
                                     type="date" 
-                                    className="bg-gray-50 rounded-lg px-3 py-2 text-sm outline-none"
+                                    className={clsx(
+                                        "rounded-lg px-3 py-2 text-sm outline-none",
+                                        isDark ? "bg-white/10 text-white" : "bg-gray-50 text-[#1A1A1A]"
+                                    )}
                                     value={newDate}
                                     onChange={e => setNewDate(e.target.value)}
                                 />
                                 <button 
                                     onClick={handleAdd}
                                     disabled={!newTitle || !newDate}
-                                    className="bg-[#1A1A1A] text-white px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50"
+                                    className={clsx(
+                                        "px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50",
+                                        isDark ? "bg-white text-[#1A1A1A]" : "bg-[#1A1A1A] text-white"
+                                    )}
                                 >
                                     Add
                                 </button>
