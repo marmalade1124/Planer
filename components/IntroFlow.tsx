@@ -17,13 +17,8 @@ export default function IntroFlow({ onComplete }: IntroFlowProps) {
   const [pin, setPin] = useState("");
 
   useEffect(() => {
-    // Check local storage on mount
-    const savedName = localStorage.getItem("planer_userName");
-    
-    if (savedName) {
-      onComplete(savedName);
-    } 
-  }, [onComplete]);
+    // Only verify we are in setup mode, do nothing else
+  }, []);
 
   const handleNext = () => {
     if (step === 1 && name.trim()) {
