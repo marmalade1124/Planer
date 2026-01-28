@@ -75,7 +75,7 @@ export default function RootLayout({
         className={`${inter.variable} ${jakarta.variable} antialiased bg-gray-50 min-h-screen flex justify-center`}
       >
          {/* Mobile Wrapper */}
-        <div className="relative flex min-h-screen w-full max-w-[430px] flex-col bg-[#FFFFFF] shadow-2xl">
+        <div className="relative flex min-h-dvh w-full max-w-[430px] flex-col bg-[#FFFFFF] shadow-2xl">
           {children}
         </div>
       </body>

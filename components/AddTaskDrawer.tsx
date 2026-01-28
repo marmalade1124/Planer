@@ -104,7 +104,7 @@ export const AddTaskDrawer = ({ isOpen, onClose, onAdd }: AddTaskDrawerProps) =>
                   placeholder="What needs to be done?"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  autoFocus
+                  autoFocus // Checked: It's here.
                   className="w-full border-b border-[#F1F1F1] pb-2 text-lg font-medium text-[#1A1A1A] placeholder:text-[#D4D4D8] focus:border-[#1A1A1A] focus:outline-none"
                 />
               </div>

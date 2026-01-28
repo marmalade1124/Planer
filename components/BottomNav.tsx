@@ -11,33 +11,44 @@ interface BottomNavProps {
   onTabChange: (tab: Tab) => void;
 }
 
+import { useHaptic } from "@/hooks/useHaptic";
+
 export const BottomNav = ({ currentTab, onTabChange }: BottomNavProps) => {
+  const haptic = useHaptic();
+
+  const handleTabChange = (tab: Tab) => {
+      if (tab !== currentTab) {
+          haptic.trigger('light');
+          onTabChange(tab);
+      }
+  };
+
   return (
-    <nav className="fixed bottom-0 left-0 right-0 mx-auto w-full max-w-[430px] border-t border-[#F1F1F1] bg-white/90 px-8 pb-8 pt-4 backdrop-blur-xl">
+    <nav className="fixed bottom-0 left-0 right-0 mx-auto w-full max-w-[430px] border-t border-[#F1F1F1] bg-white/90 px-8 pb-[calc(2rem+env(safe-area-inset-bottom))] pt-4 backdrop-blur-xl">
       <div className="flex items-center justify-between">
         <NavItem 
           icon={<Calendar className="h-6 w-6" />} 
           label="Today" 
           isActive={currentTab === "today"} 
-          onClick={() => onTabChange("today")}
+          onClick={() => handleTabChange("today")}
         />
         <NavItem 
           icon={<Clock className="h-6 w-6" />} 
           label="Deadlines" 
           isActive={currentTab === "deadlines"} 
-          onClick={() => onTabChange("deadlines")}
+          onClick={() => handleTabChange("deadlines")}
         />
         <NavItem 
           icon={<GraduationCap className="h-6 w-6" />} 
           label="Thesis" 
           isActive={currentTab === "thesis"} 
-          onClick={() => onTabChange("thesis")}
+          onClick={() => handleTabChange("thesis")}
         />
         <NavItem 
           icon={<User className="h-6 w-6" />} 
           label="Profile" 
           isActive={currentTab === "profile"} 
-          onClick={() => onTabChange("profile")}
+          onClick={() => handleTabChange("profile")}
         />
       </div>
     </nav>

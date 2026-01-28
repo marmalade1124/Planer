@@ -75,7 +75,7 @@ export const ProfileView = ({ userName, onOpenSettings }: ProfileViewProps) => {
     };
 
     return (
-        <div className="animate-in fade-in duration-500 pb-20 relative">
+        <div className="animate-in fade-in duration-500 pb-32 relative">
             {/* Settings Button (Top Right) */}
             <button 
                 onClick={onOpenSettings}

@@ -133,7 +133,7 @@ export const DeadlinesView = ({ tasks, onToggle, onDelete }: DeadlinesViewProps)
     }
 
     return (
-        <div className="flex flex-col flex-grow pb-20">
+        <div className="flex flex-col flex-grow pb-32">
              <Section title="Overdue" tasks={grouped.overdue} color="text-red-500" icon={AlertCircle} />
              <Section title="Today" tasks={grouped.today} color="text-[#1A1A1A]" />
              <Section title="Tomorrow" tasks={grouped.tomorrow} color="text-orange-600" />

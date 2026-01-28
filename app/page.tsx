@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import IntroFlow from "@/components/IntroFlow";
 import { Dashboard } from "@/components/Dashboard";
 import { PinEntryView } from "@/components/PinEntryView";
+import { ToastProvider } from "@/components/ToastProvider";
 
 export default function Home() {
   const [authState, setAuthState] = useState<'loading' | 'setup' | 'locked' | 'unlocked'>('loading');
@@ -48,5 +49,9 @@ export default function Home() {
       return <IntroFlow onComplete={handleSetupComplete} />;
   }
 
-  return <Dashboard userName={userName!} />;
+  return (
+    <ToastProvider>
+        <Dashboard userName={userName!} />
+    </ToastProvider>
+  );
 }

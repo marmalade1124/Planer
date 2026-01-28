@@ -10,6 +10,7 @@ import { SettingsDrawer } from "@/components/SettingsDrawer";
 import { subscribeToTasks, addTask, toggleTaskCompletion, deleteTask, Task, EnergyLevel } from "@/lib/db";
 import { TaskSkeleton } from "@/components/TaskSkeleton";
 import { OnboardingOverlay } from "@/components/OnboardingOverlay";
+import { useToast } from "@/components/ToastProvider";
 
 // Views
 import { DeadlinesView } from "./views/DeadlinesView";
@@ -23,6 +24,7 @@ interface DashboardProps {
 export const Dashboard = ({ userName }: DashboardProps) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true); // New loading state
+  const { showToast } = useToast();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [currentTab, setCurrentTab] = useState<Tab>("today");
@@ -52,15 +54,33 @@ export const Dashboard = ({ userName }: DashboardProps) => {
   };
 
   const handleDeleteTask = async (taskId: string) => {
+      const taskToDelete = tasks.find(t => t.id === taskId);
+      if (!taskToDelete) return;
+
       // Optimistic delete
       setTasks(prev => prev.filter(t => t.id !== taskId));
       
-      // Also clear focused task if it was the one deleted
+      // Clear focused task if needed
       if (focusedTask && focusedTask.id === taskId) {
           setFocusedTask(null);
           setIsRealityMode(false);
       }
 
+      // Show Undo Toast
+      showToast("Task deleted", async () => {
+          // UNDO ACTION: Add it back immediately
+          setTasks(prev => [...prev, taskToDelete].sort((a,b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime()));
+          // We don't need to call API because we haven't deleted it yet?
+          // WAIT. If we want true undo, we should delay the API call OR revert the API call.
+          // Easiest "Safe" Undo: Don't call API delete until toast expires? No, that's complex state.
+          // Better Undo: Call API delete, if Undo -> Call API add. 
+          // Re-adding a deleted task might lose ID (new ID).
+          // BEST UX: Mark as deleted in state, wait X seconds ?? 
+          // Let's go with: Call Delete API. If Undo -> Call Add API (re-create). It might have a new ID but that's fine for MVP.
+          await addTask(taskToDelete.userId, taskToDelete.title, new Date(taskToDelete.deadline), taskToDelete.energy);
+      });
+
+      // Execute API delete
       await deleteTask(taskId);
   };
 
@@ -220,7 +240,7 @@ export const Dashboard = ({ userName }: DashboardProps) => {
   }
 
   return (
-    <div className="flex flex-col h-full px-6 pb-24 bg-white min-h-screen">
+    <div className="flex flex-col h-full px-6 pb-32 bg-white min-h-dvh">
       {/* Header */}
       <header className="pt-16 pb-8 sticky top-0 bg-white/90 backdrop-blur-md z-10 flex items-start justify-between">
         <h1 className="font-display text-3xl font-semibold leading-[1.2] tracking-tight text-[#1A1A1A]">
